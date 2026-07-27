@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InvoiceSnapper — Turn receipts into invoices</title>
+<title>InvoiceSnappy — Turn receipts into invoices</title>
 <style>
 :root {
   --bg: #0b0a08;
@@ -315,8 +315,27 @@ body {
   .s-head, .s-row { grid-template-columns: 1fr 50px 70px 70px; gap: 6px; font-size: 12px; }
   .preview-actions { flex-direction: column; }
 }
+
+/* TOAST */
+#toast {
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(16px);
+  background: var(--surface-3); color: var(--text); border: 1px solid var(--border);
+  padding: 12px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.5); opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease; z-index: 999; max-width: 88vw; text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* BTN LOADING STATE */
+.btn-primary[disabled], .btn-secondary[disabled] { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 </style>
-<base target="_blank">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    .logo-font { font-family: 'Pacifico', cursive; font-weight: 400; letter-spacing: 0; }
+    .invoice-footer-brand { text-align: center; margin-top: 30px; padding-top: 18px; border-top: 1px solid #e6ddc8; color: rgba(217,164,65,0.18); font-family: 'Pacifico', cursive; font-size: 28px; pointer-events: none; user-select: none; }
+  </style>
 </head>
 <body>
 <div class="grain"></div>
@@ -329,7 +348,7 @@ body {
       <div class="logo-mark">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
       </div>
-      <span class="logo-text">InvoiceSnapper</span>
+      <span class="logo-text logo-font">InvoiceSnappy</span>
     </a>
     <div class="nav-links">
       <a href="#" class="nav-link active" onclick="showTab('home'); return false;">Create</a>
@@ -380,14 +399,18 @@ body {
         </div>
         <div class="scan-beam"></div>
       </div>
-      <p class="scan-text">Reading receipt with Tesseract.js…</p>
-      <p class="scan-sub">All processing happens in your browser. Nothing is uploaded.</p>
+      <p class="scan-text" id="scan-text">Reading receipt…</p>
+      <p class="scan-sub" id="scan-sub">All processing happens in your browser. Nothing is uploaded.</p>
     </div>
 
     <div id="step-3" class="step hidden">
       <div class="editor-header">
         <h2 class="editor-title">Review & Edit</h2>
         <button class="btn-text" onclick="goStep(1)">← Start over</button>
+      </div>
+      <div class="meta-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 18px;">
+        <div class="meta-field"><label>Your Business Name</label><input type="text" id="biz-name" placeholder="e.g. Acme Design Studio"></div>
+        <div class="meta-field"><label>Your Logo</label><input type="file" id="biz-logo" accept="image/*" style="padding: 8px 10px; font-size: 13px; cursor: pointer;"></div>
       </div>
       <div class="meta-row">
         <div class="meta-field"><label>Invoice #</label><input type="text" id="inv-num" value="INV-001"></div>
@@ -415,7 +438,7 @@ body {
         <span class="nudge-icon">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </span>
-        <span>InvoiceSnapper is 100% free. If it saves you time, <a href="https://Ko-fi.com/smithideas" target="_blank" rel="noopener noreferrer">consider supporting the project →</a></span>
+        <span>InvoiceSnappy is 100% free. If it saves you time, <a href="https://Ko-fi.com/smithideas" target="_blank" rel="noopener noreferrer">consider supporting the project →</a></span>
       </div>
       <button class="btn-primary btn-large" id="btn-gen">Generate Invoice</button>
     </div>
@@ -426,14 +449,14 @@ body {
         <button class="btn-text" onclick="goStep(3)">← Back to editor</button>
       </div>
       <div class="invoice-sheet" id="invoice-sheet">
-        <div class="sheet-watermark" id="sheet-watermark">InvoiceSnapper</div>
+        <div class="sheet-watermark" id="sheet-watermark">InvoiceSnappy</div>
         <div class="sheet-top">
-          <div class="sheet-brand">
-            <div class="sheet-logo">
+          <div class="sheet-brand" id="p-brand">
+            <div class="sheet-logo" id="p-logo-wrap">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
             </div>
             <div>
-              <div class="sheet-name">InvoiceSnapper</div>
+              <div class="sheet-name" id="p-biz-name">InvoiceSnappy</div>
               <div class="sheet-tag">Simple invoicing</div>
             </div>
           </div>
@@ -453,6 +476,7 @@ body {
           <div class="st-row st-grand"><span>Total</span><span id="p-total">$0.00</span></div>
         </div>
         <div class="sheet-footer">Thank you for your business</div>
+        <div class="invoice-footer-brand">InvoiceSnappy</div>
       </div>
       <div class="preview-actions">
         <button class="btn-primary" id="btn-dl">Download PDF</button>
@@ -491,7 +515,7 @@ body {
       </div>
       <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Built by one person. Kept free for everyone.</h3>
       <p style="font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px;">
-        InvoiceSnapper doesn't have ads, trackers, or paywalls. If it saves you time or helps you get paid faster, a tip on Ko-fi goes directly toward keeping it alive and improving. One-time or monthly — whatever feels right. No pressure.
+        InvoiceSnappy doesn't have ads, trackers, or paywalls. If it saves you time or helps you get paid faster, a tip on Ko-fi goes directly toward keeping it alive and improving. One-time or monthly — whatever feels right. No pressure.
       </p>
       <a href="https://Ko-fi.com/smithideas" target="_blank" rel="noopener noreferrer" class="btn-pricing btn-pricing-active" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; text-decoration: none; width: auto;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -509,20 +533,25 @@ body {
       <a href="https://smithideas.com/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
     </div>
     <div class="footer-copy">
-      ©2026 <a href="https://SmithIdeas.com" target="_blank" rel="noopener noreferrer">Smith Ideas, LLC.</a>
+      ©2026 <a href="https://smithideas.com" target="_blank" rel="noopener noreferrer">Smith Ideas, LLC.</a>
     </div>
   </footer>
 </div>
 
+<div id="toast"></div>
+
 <script>
 let items = [];
-let isFree = false; // all features free, no watermarks
-const demo = [
-  { desc: 'Web Design Consultation', qty: 4, rate: 125.00, tax: 0 },
-  { desc: 'Logo Design', qty: 1, rate: 350.00, tax: 8.5 },
-  { desc: 'Hosting Setup', qty: 1, rate: 75.00, tax: 0 },
-];
 const $ = id => document.getElementById(id);
+
+let toastTimer;
+function showToast(msg, duration = 3200) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+}
 
 function showTab(name) {
   document.querySelectorAll('.tab-panel').forEach(t => t.classList.add('hidden'));
@@ -536,9 +565,70 @@ function goStep(n) {
 }
 
 $('btn-upload').addEventListener('click', () => $('file-input').click());
-$('file-input').addEventListener('change', () => {
+
+// Best-effort receipt line parser: looks for "description ... 12.34" style lines
+// and skips summary lines (subtotal/tax/total/payment). Not perfect on every
+// receipt layout, but the Review & Edit step lets people fix anything it misses.
+function parseReceiptText(raw) {
+  const skipWords = /\b(subtotal|total|balance|change due|change|cash|credit|debit|visa|mastercard|amex|amount due|tip|gratuity|card|payment|due|tax)\b/i;
+  const priceRe = /\$?\s*(\d{1,5}\.\d{2})\s*$/;
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const out = [];
+  for (const line of lines) {
+    const m = line.match(priceRe);
+    if (!m) continue;
+    const price = parseFloat(m[1]);
+    if (isNaN(price) || price <= 0 || price > 100000) continue;
+    let desc = line.slice(0, m.index)
+      .replace(/[\s.\-:$xX@]+$/, '')
+      .replace(/^\d+\s*[xX]?\s*/, '')
+      .trim();
+    if (!desc || desc.length < 2) continue;
+    if (skipWords.test(desc)) continue;
+    out.push({ desc, qty: 1, rate: price, tax: 0 });
+    if (out.length >= 30) break;
+  }
+  return out;
+}
+
+let ocrWorker = null;
+$('file-input').addEventListener('change', async () => {
+  const file = $('file-input').files[0];
+  if (!file) return;
   goStep(2);
-  setTimeout(() => { goStep(3); items = JSON.parse(JSON.stringify(demo)); renderItems(); }, 2500);
+  $('scan-text').textContent = 'Reading receipt…';
+
+  try {
+    if (!window.Tesseract) throw new Error('OCR engine did not load');
+    if (!ocrWorker) {
+      ocrWorker = await Tesseract.createWorker('eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text' && typeof m.progress === 'number') {
+            $('scan-text').textContent = `Reading receipt… ${Math.round(m.progress * 100)}%`;
+          }
+        }
+      });
+    }
+    const { data } = await ocrWorker.recognize(file);
+    const parsed = parseReceiptText(data.text || '');
+
+    items = parsed.length ? parsed : [{ desc: '', qty: 1, rate: 0, tax: 0 }];
+    goStep(3);
+    renderItems();
+    if (!parsed.length) {
+      showToast("Couldn't confidently read that receipt — add your items below.");
+    } else {
+      showToast(`Pulled ${parsed.length} item${parsed.length > 1 ? 's' : ''} from your receipt — double-check before generating.`);
+    }
+  } catch (err) {
+    console.error(err);
+    items = [{ desc: '', qty: 1, rate: 0, tax: 0 }];
+    goStep(3);
+    renderItems();
+    showToast("Couldn't read that receipt — add your items manually below.");
+  } finally {
+    $('file-input').value = '';
+  }
 });
 $('btn-manual').addEventListener('click', () => {
   goStep(3); items = [{ desc: '', qty: 1, rate: 0, tax: 0 }]; renderItems();
@@ -585,12 +675,34 @@ function calc() {
   $('t-total').textContent = '$' + (sub + tax).toFixed(2);
 }
 
+let bizLogoDataUrl = '';
+$('biz-logo').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => { bizLogoDataUrl = ev.target.result; };
+  reader.readAsDataURL(file);
+});
+
 $('btn-gen').addEventListener('click', () => {
   goStep(4);
   $('p-num').textContent = $('inv-num').value || 'INV-001';
   const d = $('inv-date').valueAsDate || new Date();
   $('p-date').textContent = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   $('p-client').textContent = $('inv-client').value || '—';
+
+  // Business name
+  const bizName = $('biz-name').value.trim();
+  $('p-biz-name').textContent = bizName || 'InvoiceSnappy';
+
+  // Logo
+  const logoWrap = $('p-logo-wrap');
+  if (bizLogoDataUrl) {
+    logoWrap.innerHTML = '<img src="' + bizLogoDataUrl + '" style="width:38px;height:38px;object-fit:contain;border-radius:9px;">';
+  } else {
+    logoWrap.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>';
+  }
+
   $('sheet-watermark').classList.remove('show'); // everything is free, no watermark
   const container = $('p-items');
   container.innerHTML = `<div class="s-head"><span>Description</span><span>Qty</span><span>Rate</span><span>Amount</span></div>`;
@@ -607,8 +719,90 @@ $('btn-gen').addEventListener('click', () => {
   $('p-total').textContent = '$' + (sub + tax).toFixed(2);
 });
 
-$('btn-dl').addEventListener('click', () => alert('PDF download triggers here (html2pdf.js)'));
+$('btn-dl').addEventListener('click', () => {
+  const invNum = $('inv-num').value.trim() || 'invoice';
+  const bizName = $('biz-name').value.trim() || 'InvoiceSnappy';
+  const client = $('inv-client').value.trim() || '—';
+  const d = $('inv-date').valueAsDate || new Date();
+  const dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+  // Build line items
+  let rowsHtml = '';
+  let sub = 0, tax = 0;
+  items.forEach(it => {
+    const s = it.qty * it.rate, t = s * (it.tax / 100);
+    sub += s; tax += t;
+    rowsHtml += '<tr style="border-bottom:1px solid #e6ddc8;"><td style="padding:12px 0;font-size:13.5px;color:#1b1712;font-weight:600;">' + (it.desc || '—') + '</td><td style="padding:12px 0;text-align:right;font-size:13.5px;color:#746c5c;font-family:ui-monospace,SFMono-Regular,monospace;">' + it.qty + '</td><td style="padding:12px 0;text-align:right;font-size:13.5px;color:#746c5c;font-family:ui-monospace,SFMono-Regular,monospace;">$' + it.rate.toFixed(2) + '</td><td style="padding:12px 0;text-align:right;font-size:13.5px;color:#1b1712;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace;">$' + (s+t).toFixed(2) + '</td></tr>';
+  });
+
+  // Logo image or fallback
+  let logoHtml = '';
+  if (bizLogoDataUrl) {
+    logoHtml = '<img src="' + bizLogoDataUrl + '" style="width:38px;height:38px;object-fit:contain;border-radius:9px;margin-right:12px;">';
+  } else {
+    logoHtml = '<div style="width:38px;height:38px;border-radius:9px;background:linear-gradient(150deg,#e0a84f,#b9832c);display:flex;align-items:center;justify-content:center;color:#fff;margin-right:12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></div>';
+  }
+
+  const cleanHtml = '<div style="background:#f8f4ea;color:#1b1712;padding:44px 40px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;max-width:700px;margin:0 auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;">' +
+      '<div style="display:flex;align-items:center;">' + logoHtml + '<div><div style="font-size:19px;font-weight:800;color:#1b1712;">' + bizName + '</div><div style="font-size:13px;color:#8a8070;">Simple invoicing</div></div></div>' +
+      '<div style="text-align:right;"><div style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:22px;font-weight:700;color:#a97a24;">' + invNum + '</div><div style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;color:#8a8070;margin-top:5px;">' + dateStr + '</div></div>' +
+    '</div>' +
+    '<div style="margin-bottom:30px;"><div style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;color:#9a917f;letter-spacing:1px;margin-bottom:5px;">BILL TO</div><div style="font-size:16.5px;font-weight:700;color:#1b1712;">' + client + '</div></div>' +
+    '<table style="width:100%;border-collapse:collapse;margin-bottom:30px;">' +
+      '<thead><tr style="border-bottom:2px solid #1b1712;"><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:left;">Description</th><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:right;">Qty</th><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:right;">Rate</th><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:right;">Amount</th></tr></thead>' +
+      '<tbody>' + rowsHtml + '</tbody>' +
+    '</table>' +
+    '<div style="width:260px;margin-left:auto;">' +
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#746c5c;"><span>Subtotal</span><span style="font-family:ui-monospace,SFMono-Regular,monospace;">$' + sub.toFixed(2) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#746c5c;"><span>Tax</span><span style="font-family:ui-monospace,SFMono-Regular,monospace;">$' + tax.toFixed(2) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:13px 0 0;margin-top:4px;border-top:2px solid #1b1712;font-size:21px;font-weight:800;color:#1b1712;"><span>Total</span><span style="font-family:ui-monospace,SFMono-Regular,monospace;color:#a97a24;">$' + (sub+tax).toFixed(2) + '</span></div>' +
+    '</div>' +
+    '<div style="text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid #e6ddc8;color:#9a917f;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace;letter-spacing:0.3px;">Thank you for your business</div>' +
+    '<div style="text-align:center;margin-top:12px;color:rgba(217,164,65,0.18);font-family:Pacifico,cursive;font-size:28px;pointer-events:none;user-select:none;">InvoiceSnappy</div>' +
+  '</div>';
+
+  const opt = {
+    margin: 0.4,
+    filename: invNum.replace(/[^a-zA-Z0-9-_]/g, '_') + '.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = cleanHtml;
+  tempDiv.style.position = 'fixed';
+  tempDiv.style.top = '0';
+  tempDiv.style.left = '0';
+  tempDiv.style.opacity = '0';
+  tempDiv.style.zIndex = '-1';
+  tempDiv.style.pointerEvents = 'none';
+  tempDiv.style.width = '700px'; // matches the invoice content's own max-width
+  document.body.appendChild(tempDiv);
+
+  const dlBtn = $('btn-dl');
+  const originalLabel = dlBtn.textContent;
+  dlBtn.setAttribute('disabled', 'true');
+  dlBtn.textContent = 'Generating…';
+
+  html2pdf().set(opt).from(tempDiv).save()
+    .then(() => {
+      showToast('PDF downloaded');
+    })
+    .catch(err => {
+      console.error(err);
+      showToast("Couldn't generate the PDF — please try again.");
+    })
+    .finally(() => {
+      document.body.removeChild(tempDiv);
+      dlBtn.removeAttribute('disabled');
+      dlBtn.textContent = originalLabel;
+    });
+});
 $('inv-date').valueAsDate = new Date();
 </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </body>
 </html>
