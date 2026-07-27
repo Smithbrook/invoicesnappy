@@ -316,6 +316,7 @@ body {
   .preview-actions { flex-direction: column; }
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 <div class="grain"></div>
@@ -412,9 +413,9 @@ body {
       </div>
       <div class="upgrade-nudge" id="nudge">
         <span class="nudge-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </span>
-        <span>Free plan: your invoice includes a small watermark. <a href="#" onclick="showTab('pricing'); return false;">Upgrade to remove it →</a></span>
+        <span>InvoiceSnapper is 100% free. If it saves you time, <a href="https://Ko-fi.com/smithideas" target="_blank" rel="noopener noreferrer">consider supporting the project →</a></span>
       </div>
       <button class="btn-primary btn-large" id="btn-gen">Generate Invoice</button>
     </div>
@@ -462,58 +463,50 @@ body {
 
   <div id="tab-pricing" class="tab-panel hidden">
     <div class="pricing-hero">
-      <div class="eyebrow" style="justify-content:center;">Simple pricing</div>
-      <h1 class="ph-title">No surprises.<br>Cancel anytime.</h1>
-      <p class="ph-sub">Start free. Upgrade when InvoiceSnapper pays for itself.</p>
+      <div class="eyebrow" style="justify-content:center;">Built by an indie dev</div>
+      <h1 class="ph-title">Everything is free.<br>No paywalls.</h1>
+      <p class="ph-sub">Unlimited invoices, no watermarks, no account required. Just a tool that works.</p>
     </div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="pc-tier">Free</div>
-        <div class="pc-price">$0</div>
-        <div class="pc-period">Forever</div>
-        <ul class="pc-list">
-          <li>2 invoices / month</li>
-          <li>Basic template</li>
-          <li>InvoiceSnapper watermark</li>
-          <li><span class="ocr-wrap">OCR<span class="tooltip"><span class="tt-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="tt-text">Optical Character Recognition</span></span></span> + manual entry</li>
-        </ul>
-        <button class="btn-pricing btn-pricing-muted">Current plan</button>
-      </div>
-      <div class="price-card featured">
-        <div class="pc-badge">Most popular</div>
-        <div class="pc-tier">Monthly</div>
-        <div class="pc-price">$9</div>
-        <div class="pc-period">per month</div>
+
+    <div class="pricing-grid" style="grid-template-columns: 1fr; max-width: 480px; margin: 0 auto;">
+      <div class="price-card" style="border-color: var(--accent-dim);">
+        <div class="pc-tier" style="color: var(--accent-2);">Free Forever</div>
+        <div class="pc-price" style="font-size: 48px;">$0</div>
+        <div class="pc-period">No catch. No credit card.</div>
         <ul class="pc-list">
           <li>Unlimited invoices</li>
           <li>No watermark</li>
           <li>Custom branding</li>
           <li>Saved clients</li>
           <li>PDF & CSV export</li>
+          <li>OCR receipt scanning</li>
+          <li>All future updates</li>
         </ul>
-        <button class="btn-pricing btn-pricing-active">Upgrade</button>
-      </div>
-      <div class="price-card">
-        <div class="pc-tier">Lifetime</div>
-        <div class="pc-price">$49</div>
-        <div class="pc-period">One-time</div>
-        <ul class="pc-list">
-          <li>Everything in Monthly</li>
-          <li>Pay once, keep forever</li>
-          <li>Future updates included</li>
-          <li>Priority support</li>
-        </ul>
-        <button class="btn-pricing btn-pricing-active">Buy lifetime</button>
       </div>
     </div>
-    <p class="pricing-trust">Secure payments. 30-day money-back guarantee.</p>
+
+    <div class="supporter-box" style="max-width: 480px; margin: 34px auto 0; text-align: center;">
+      <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--accent-glow); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--accent-2);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Built by one person. Kept free for everyone.</h3>
+      <p style="font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px;">
+        InvoiceSnapper doesn't have ads, trackers, or paywalls. If it saves you time or helps you get paid faster, a tip on Ko-fi goes directly toward keeping it alive and improving. One-time or monthly — whatever feels right. No pressure.
+      </p>
+      <a href="https://Ko-fi.com/smithideas" target="_blank" rel="noopener noreferrer" class="btn-pricing btn-pricing-active" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; text-decoration: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Support the project
+      </a>
+    </div>
+
+    <p class="pricing-trust" style="margin-top: 30px;">Made with care by one person. Thanks for using it.</p>
   </div>
 
   <footer class="footer">
     <div class="footer-links">
-      <a href="https://smithideas.com/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+      <a href="https://smithideas.com/pages/contact" target="_blank" rel="noopener noreferrer">Contact</a>
       <span class="footer-divider">⌁</span>
-      <a href="https://smithideas.com/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
+      <a href="https://smithideas.com/pages/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
     </div>
     <div class="footer-copy">
       ©2026 <a href="https://SmithIdeas.com" target="_blank" rel="noopener noreferrer">Smith Ideas, LLC.</a>
@@ -523,7 +516,7 @@ body {
 
 <script>
 let items = [];
-let isFree = true;
+let isFree = false; // all features free, no watermarks
 const demo = [
   { desc: 'Web Design Consultation', qty: 4, rate: 125.00, tax: 0 },
   { desc: 'Logo Design', qty: 1, rate: 350.00, tax: 8.5 },
@@ -598,7 +591,7 @@ $('btn-gen').addEventListener('click', () => {
   const d = $('inv-date').valueAsDate || new Date();
   $('p-date').textContent = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   $('p-client').textContent = $('inv-client').value || '—';
-  $('sheet-watermark').classList.toggle('show', isFree);
+  $('sheet-watermark').classList.remove('show'); // everything is free, no watermark
   const container = $('p-items');
   container.innerHTML = `<div class="s-head"><span>Description</span><span>Qty</span><span>Rate</span><span>Amount</span></div>`;
   let sub = 0, tax = 0;
