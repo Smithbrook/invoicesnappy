@@ -328,6 +328,18 @@ body {
 
 /* BTN LOADING STATE */
 .btn-primary[disabled], .btn-secondary[disabled] { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+
+/* PRINT: isolate just the invoice sheet, hide everything else on the page */
+@media print {
+  body * { visibility: hidden; }
+  .invoice-sheet, .invoice-sheet * { visibility: visible; }
+  .invoice-sheet {
+    position: fixed; inset: 0; margin: 0; box-shadow: none; border-radius: 0;
+    padding: 44px 40px; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .invoice-sheet::before { display: none; }
+  @page { size: letter; margin: 0.3in; }
+}
 </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -479,7 +491,7 @@ body {
         <div class="invoice-footer-brand">InvoiceSnappy</div>
       </div>
       <div class="preview-actions">
-        <button class="btn-primary" id="btn-dl">Download PDF</button>
+        <button class="btn-primary" id="btn-dl">Print / Save as PDF</button>
         <button class="btn-secondary" onclick="goStep(1); items=[];">Create another</button>
       </div>
     </div>
@@ -720,87 +732,11 @@ $('btn-gen').addEventListener('click', () => {
 });
 
 $('btn-dl').addEventListener('click', () => {
-  const invNum = $('inv-num').value.trim() || 'invoice';
-  const bizName = $('biz-name').value.trim() || 'InvoiceSnappy';
-  const client = $('inv-client').value.trim() || '—';
-  const d = $('inv-date').valueAsDate || new Date();
-  const dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-
-  // Build line items
-  let rowsHtml = '';
-  let sub = 0, tax = 0;
-  items.forEach(it => {
-    const s = it.qty * it.rate, t = s * (it.tax / 100);
-    sub += s; tax += t;
-    rowsHtml += '<tr style="border-bottom:1px solid #e6ddc8;"><td style="padding:12px 0;font-size:13.5px;color:#1b1712;font-weight:600;">' + (it.desc || '—') + '</td><td style="padding:12px 0;text-align:right;font-size:13.5px;color:#746c5c;font-family:ui-monospace,SFMono-Regular,monospace;">' + it.qty + '</td><td style="padding:12px 0;text-align:right;font-size:13.5px;color:#746c5c;font-family:ui-monospace,SFMono-Regular,monospace;">$' + it.rate.toFixed(2) + '</td><td style="padding:12px 0;text-align:right;font-size:13.5px;color:#1b1712;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace;">$' + (s+t).toFixed(2) + '</td></tr>';
-  });
-
-  // Logo image or fallback
-  let logoHtml = '';
-  if (bizLogoDataUrl) {
-    logoHtml = '<img src="' + bizLogoDataUrl + '" style="width:38px;height:38px;object-fit:contain;border-radius:9px;margin-right:12px;">';
-  } else {
-    logoHtml = '<div style="width:38px;height:38px;border-radius:9px;background:linear-gradient(150deg,#e0a84f,#b9832c);display:flex;align-items:center;justify-content:center;color:#fff;margin-right:12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></div>';
-  }
-
-  const cleanHtml = '<div style="background:#f8f4ea;color:#1b1712;padding:44px 40px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;max-width:700px;margin:0 auto;">' +
-    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;">' +
-      '<div style="display:flex;align-items:center;">' + logoHtml + '<div><div style="font-size:19px;font-weight:800;color:#1b1712;">' + bizName + '</div><div style="font-size:13px;color:#8a8070;">Simple invoicing</div></div></div>' +
-      '<div style="text-align:right;"><div style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:22px;font-weight:700;color:#a97a24;">' + invNum + '</div><div style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;color:#8a8070;margin-top:5px;">' + dateStr + '</div></div>' +
-    '</div>' +
-    '<div style="margin-bottom:30px;"><div style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;color:#9a917f;letter-spacing:1px;margin-bottom:5px;">BILL TO</div><div style="font-size:16.5px;font-weight:700;color:#1b1712;">' + client + '</div></div>' +
-    '<table style="width:100%;border-collapse:collapse;margin-bottom:30px;">' +
-      '<thead><tr style="border-bottom:2px solid #1b1712;"><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:left;">Description</th><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:right;">Qty</th><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:right;">Rate</th><th style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:#9a917f;text-align:right;">Amount</th></tr></thead>' +
-      '<tbody>' + rowsHtml + '</tbody>' +
-    '</table>' +
-    '<div style="width:260px;margin-left:auto;">' +
-      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#746c5c;"><span>Subtotal</span><span style="font-family:ui-monospace,SFMono-Regular,monospace;">$' + sub.toFixed(2) + '</span></div>' +
-      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#746c5c;"><span>Tax</span><span style="font-family:ui-monospace,SFMono-Regular,monospace;">$' + tax.toFixed(2) + '</span></div>' +
-      '<div style="display:flex;justify-content:space-between;padding:13px 0 0;margin-top:4px;border-top:2px solid #1b1712;font-size:21px;font-weight:800;color:#1b1712;"><span>Total</span><span style="font-family:ui-monospace,SFMono-Regular,monospace;color:#a97a24;">$' + (sub+tax).toFixed(2) + '</span></div>' +
-    '</div>' +
-    '<div style="text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid #e6ddc8;color:#9a917f;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace;letter-spacing:0.3px;">Thank you for your business</div>' +
-    '<div style="text-align:center;margin-top:12px;color:rgba(217,164,65,0.18);font-family:Pacifico,cursive;font-size:28px;pointer-events:none;user-select:none;">InvoiceSnappy</div>' +
-  '</div>';
-
-  const opt = {
-    margin: 0.4,
-    filename: invNum.replace(/[^a-zA-Z0-9-_]/g, '_') + '.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  };
-
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = cleanHtml;
-  tempDiv.style.position = 'fixed';
-  tempDiv.style.top = '0';
-  tempDiv.style.left = '-10000px'; // off-screen, but fixed = viewport-relative so it's immune to page scroll
-  tempDiv.style.pointerEvents = 'none';
-  tempDiv.style.width = '700px'; // matches the invoice content's own max-width
-  document.body.appendChild(tempDiv);
-
-  const dlBtn = $('btn-dl');
-  const originalLabel = dlBtn.textContent;
-  dlBtn.setAttribute('disabled', 'true');
-  dlBtn.textContent = 'Generating…';
-
-  html2pdf().set(opt).from(tempDiv).save()
-    .then(() => {
-      showToast('PDF downloaded');
-    })
-    .catch(err => {
-      console.error(err);
-      showToast("Couldn't generate the PDF — please try again.");
-    })
-    .finally(() => {
-      document.body.removeChild(tempDiv);
-      dlBtn.removeAttribute('disabled');
-      dlBtn.textContent = originalLabel;
-    });
+  window.print();
 });
 $('inv-date').valueAsDate = new Date();
 </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </body>
 </html>
