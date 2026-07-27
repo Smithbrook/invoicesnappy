@@ -331,10 +331,10 @@ body {
 
 /* PRINT: isolate just the invoice sheet, hide everything else on the page */
 @media print {
-  body * { visibility: hidden; }
-  .invoice-sheet, .invoice-sheet * { visibility: visible; }
+  body * { visibility: hidden !important; }
+  .invoice-sheet, .invoice-sheet * { visibility: visible !important; }
   .invoice-sheet {
-    position: fixed; inset: 0; margin: 0; box-shadow: none; border-radius: 0;
+    position: absolute; top: 0; left: 0; width: 100%; margin: 0; box-shadow: none; border-radius: 0;
     padding: 44px 40px; -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
   .invoice-sheet::before { display: none; }
