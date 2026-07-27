@@ -69,18 +69,13 @@ body {
   box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 4px 14px rgba(217,164,65,0.25);
 }
 .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-.nav-links { display: flex; gap: 26px; align-items: center; }
-.nav-link { color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; position: relative; padding: 4px 0; }
-.nav-link:hover { color: var(--text); }
-.nav-link.active { color: var(--accent-2); }
-.nav-link.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -21px; height: 2px; background: var(--accent); }
 
-/* TABS */
-.tab-panel { animation: fadeIn 0.4s ease; }
+/* STEP TRANSITIONS */
+.step { animation: fadeIn 0.4s ease; }
 .hidden { display: none !important; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
 @media (prefers-reduced-motion: reduce) {
-  .tab-panel, .step { animation: none !important; }
+  .step { animation: none !important; }
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
@@ -95,63 +90,6 @@ body {
 /* HERO */
 .hero-title { font-size: clamp(34px, 6.2vw, 54px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.08; margin-bottom: 16px; text-wrap: balance; }
 .hero-sub { font-size: 16.5px; color: var(--text-2); margin-bottom: 42px; max-width: 440px; }
-
-/* CHOICE CARDS */
-.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.choice-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 30px 22px; text-align: center; cursor: pointer; transition: all 0.25s cubic-bezier(.2,.8,.2,1); color: var(--text);
-  appearance: none; font-family: inherit; position: relative; overflow: hidden;
-}
-.choice-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0; transition: opacity 0.25s;
-}
-.choice-card:hover { border-color: var(--accent-dim); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(217,164,65,0.12); }
-.choice-card:hover::before { opacity: 1; }
-.choice-icon {
-  color: var(--accent-2); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
-  width: 56px; height: 56px; border-radius: 14px; background: var(--accent-glow);
-}
-.choice-title { font-size: 17px; font-weight: 700; margin-bottom: 7px; }
-.choice-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
-
-/* OCR TOOLTIP */
-.ocr-wrap { position: relative; display: inline-flex; align-items: center; gap: 3px; cursor: help; }
-.ocr-wrap .tt-icon { display: inline-flex; color: var(--text-3); transition: color 0.2s; }
-.ocr-wrap:hover .tt-icon { color: var(--accent-2); }
-.tooltip {
-  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) scale(0.96);
-  background: var(--surface-3); border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px 12px; font-size: 12px; color: var(--text-2); white-space: nowrap;
-  opacity: 0; pointer-events: none; transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-  display: flex; align-items: center; gap: 6px; z-index: 5;
-}
-.tooltip::after {
-  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border: 5px solid transparent; border-top-color: var(--surface-3);
-}
-.ocr-wrap:hover .tooltip { opacity: 1; transform: translateX(-50%) scale(1); }
-
-/* OCR SCAN */
-.scan-container {
-  position: relative; width: 230px; height: 290px; margin: 46px auto 26px;
-  background: var(--surface); border-radius: 12px; border: 1px solid var(--border);
-  padding: 30px 26px; overflow: hidden; transform: rotate(-1.2deg);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-}
-.receipt-mock { display: flex; flex-direction: column; gap: 14px; }
-.r-line { height: 9px; background: var(--surface-3); border-radius: 4px; animation: pulse 1.4s infinite; }
-.r-line.w-80 { width: 80%; } .r-line.w-60 { width: 60%; } .r-line.w-40 { width: 40%; } .r-line.w-70 { width: 70%; } .r-line.w-50 { width: 50%; }
-.r-line:nth-child(2) { animation-delay: 0.2s; } .r-line:nth-child(3) { animation-delay: 0.4s; } .r-line:nth-child(4) { animation-delay: 0.6s; }
-.r-line:nth-child(5) { animation-delay: 0.8s; } .r-line:nth-child(6) { animation-delay: 1.0s; } .r-line:nth-child(7) { animation-delay: 1.2s; }
-@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.65} }
-.scan-beam { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); box-shadow: 0 0 20px var(--accent), 0 0 44px var(--accent-glow); animation: scan 2.2s ease-in-out infinite; border-radius: 2px; }
-@keyframes scan { 0%{top:0;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%;opacity:0} }
-.scan-text { text-align: center; font-size: 16px; font-weight: 700; }
-.scan-sub { text-align: center; font-size: 13px; color: var(--text-3); margin-top: 6px; }
 
 /* EDITOR */
 .editor-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
@@ -305,7 +243,6 @@ body {
 .footer-copy a:hover { color: var(--accent-2); }
 
 @media (max-width: 640px) {
-  .choice-grid { grid-template-columns: 1fr; }
   .meta-row { grid-template-columns: 1fr; }
   .table-head, .item-row { grid-template-columns: 1fr 50px 70px 50px 60px 36px; }
   .pricing-grid { grid-template-columns: 1fr; }
@@ -356,69 +293,23 @@ body {
 
 <div class="app">
   <nav class="nav">
-    <a href="#" class="logo-link" onclick="showTab('home'); return false;">
+    <a href="#" class="logo-link" onclick="return false;">
       <div class="logo-mark">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
       </div>
       <span class="logo-text logo-font">InvoiceSnappy</span>
     </a>
-    <div class="nav-links">
-      <a href="#" class="nav-link active" onclick="showTab('home'); return false;">Create</a>
-      <a href="#" class="nav-link" onclick="showTab('pricing'); return false;">Pricing</a>
-    </div>
   </nav>
 
-  <div id="tab-home" class="tab-panel">
-    <div id="step-1" class="step">
-      <div class="eyebrow">Receipt → Invoice, in seconds</div>
-      <h1 class="hero-title">Turn any receipt into<br>a professional invoice.</h1>
-      <p class="hero-sub">Snap a photo. Edit the details. Send it. No account needed to try.</p>
-      <div class="choice-grid">
-        <button class="choice-card" id="btn-upload">
-          <div class="choice-icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="4" y1="13" x2="20" y2="13"/>
-              <line x1="4" y1="17" x2="14" y2="17"/>
-              <line x1="12" y1="9" x2="12" y2="9"/>
-            </svg>
-          </div>
-          <div class="choice-title">Upload Receipt</div>
-          <div class="choice-desc">Extract items automatically with on-device <span class="ocr-wrap">OCR<span class="tooltip"><span class="tt-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="tt-text">Optical Character Recognition</span></span></span></div>
-        </button>
-        <button class="choice-card" id="btn-manual">
-          <div class="choice-icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
-          </div>
-          <div class="choice-title">Enter Manually</div>
-          <div class="choice-desc">Type your line items directly into the editor</div>
-        </button>
-      </div>
-      <input type="file" id="file-input" accept="image/*" hidden>
-    </div>
+  <div class="hero-block">
+    <div class="eyebrow">Free invoice maker, no account needed</div>
+    <h1 class="hero-title">Create a professional<br>invoice in seconds.</h1>
+    <p class="hero-sub">Fill in your details, add line items, and generate a clean invoice you can print or save as a PDF.</p>
+  </div>
 
-    <div id="step-2" class="step hidden">
-      <div class="scan-container">
-        <div class="receipt-mock">
-          <div class="r-line w-80"></div><div class="r-line w-60"></div>
-          <div class="r-line"></div><div class="r-line w-40"></div>
-          <div class="r-line"></div><div class="r-line w-70"></div>
-          <div class="r-line w-50"></div>
-        </div>
-        <div class="scan-beam"></div>
-      </div>
-      <p class="scan-text" id="scan-text">Reading receipt…</p>
-      <p class="scan-sub" id="scan-sub">All processing happens in your browser. Nothing is uploaded.</p>
-    </div>
-
-    <div id="step-3" class="step hidden">
+  <div id="step-3" class="step">
       <div class="editor-header">
-        <h2 class="editor-title">Review & Edit</h2>
-        <button class="btn-text" onclick="goStep(1)">← Start over</button>
+        <h2 class="editor-title">Invoice Details</h2>
       </div>
       <div class="meta-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 18px;">
         <div class="meta-field"><label>Your Business Name</label><input type="text" id="biz-name" placeholder="e.g. Acme Design Studio"></div>
@@ -492,12 +383,11 @@ body {
       </div>
       <div class="preview-actions">
         <button class="btn-primary" id="btn-dl">Print / Save as PDF</button>
-        <button class="btn-secondary" onclick="goStep(1); items=[];">Create another</button>
+        <button class="btn-secondary" onclick="startNew()">Create another</button>
       </div>
     </div>
-  </div>
 
-  <div id="tab-pricing" class="tab-panel hidden">
+  <section class="pricing-section">
     <div class="pricing-hero">
       <div class="eyebrow" style="justify-content:center;">Built by an indie dev</div>
       <h1 class="ph-title">Everything is free.<br>No paywalls.</h1>
@@ -514,8 +404,7 @@ body {
           <li>No watermark</li>
           <li>Custom branding</li>
           <li>Saved clients</li>
-          <li>PDF & CSV export</li>
-          <li>OCR receipt scanning</li>
+          <li>PDF export</li>
           <li>All future updates</li>
         </ul>
       </div>
@@ -536,7 +425,7 @@ body {
     </div>
 
     <p class="pricing-trust" style="margin-top: 30px;">Made with care by one person. Thanks for using it.</p>
-  </div>
+  </section>
 
   <footer class="footer">
     <div class="footer-links">
@@ -565,86 +454,15 @@ function showToast(msg, duration = 3200) {
   toastTimer = setTimeout(() => t.classList.remove('show'), duration);
 }
 
-function showTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(t => t.classList.add('hidden'));
-  $(`tab-${name}`).classList.remove('hidden');
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.querySelector(`.nav-link[onclick*="'${name}'"]`).classList.add('active');
-}
 function goStep(n) {
-  [1,2,3,4].forEach(i => $(`step-${i}`).classList.add('hidden'));
+  [3,4].forEach(i => $(`step-${i}`).classList.add('hidden'));
   $(`step-${n}`).classList.remove('hidden');
 }
-
-$('btn-upload').addEventListener('click', () => $('file-input').click());
-
-// Best-effort receipt line parser: looks for "description ... 12.34" style lines
-// and skips summary lines (subtotal/tax/total/payment). Not perfect on every
-// receipt layout, but the Review & Edit step lets people fix anything it misses.
-function parseReceiptText(raw) {
-  const skipWords = /\b(subtotal|total|balance|change due|change|cash|credit|debit|visa|mastercard|amex|amount due|tip|gratuity|card|payment|due|tax)\b/i;
-  const priceRe = /\$?\s*(\d{1,5}\.\d{2})\s*$/;
-  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  const out = [];
-  for (const line of lines) {
-    const m = line.match(priceRe);
-    if (!m) continue;
-    const price = parseFloat(m[1]);
-    if (isNaN(price) || price <= 0 || price > 100000) continue;
-    let desc = line.slice(0, m.index)
-      .replace(/[\s.\-:$xX@]+$/, '')
-      .replace(/^\d+\s*[xX]?\s*/, '')
-      .trim();
-    if (!desc || desc.length < 2) continue;
-    if (skipWords.test(desc)) continue;
-    out.push({ desc, qty: 1, rate: price, tax: 0 });
-    if (out.length >= 30) break;
-  }
-  return out;
+function startNew() {
+  items = [{ desc: '', qty: 1, rate: 0, tax: 0 }];
+  renderItems();
+  goStep(3);
 }
-
-let ocrWorker = null;
-$('file-input').addEventListener('change', async () => {
-  const file = $('file-input').files[0];
-  if (!file) return;
-  goStep(2);
-  $('scan-text').textContent = 'Reading receipt…';
-
-  try {
-    if (!window.Tesseract) throw new Error('OCR engine did not load');
-    if (!ocrWorker) {
-      ocrWorker = await Tesseract.createWorker('eng', 1, {
-        logger: m => {
-          if (m.status === 'recognizing text' && typeof m.progress === 'number') {
-            $('scan-text').textContent = `Reading receipt… ${Math.round(m.progress * 100)}%`;
-          }
-        }
-      });
-    }
-    const { data } = await ocrWorker.recognize(file);
-    const parsed = parseReceiptText(data.text || '');
-
-    items = parsed.length ? parsed : [{ desc: '', qty: 1, rate: 0, tax: 0 }];
-    goStep(3);
-    renderItems();
-    if (!parsed.length) {
-      showToast("Couldn't confidently read that receipt — add your items below.");
-    } else {
-      showToast(`Pulled ${parsed.length} item${parsed.length > 1 ? 's' : ''} from your receipt — double-check before generating.`);
-    }
-  } catch (err) {
-    console.error(err);
-    items = [{ desc: '', qty: 1, rate: 0, tax: 0 }];
-    goStep(3);
-    renderItems();
-    showToast("Couldn't read that receipt — add your items manually below.");
-  } finally {
-    $('file-input').value = '';
-  }
-});
-$('btn-manual').addEventListener('click', () => {
-  goStep(3); items = [{ desc: '', qty: 1, rate: 0, tax: 0 }]; renderItems();
-});
 
 function renderItems() {
   const body = $('items-body'); body.innerHTML = '';
@@ -735,8 +553,10 @@ $('btn-dl').addEventListener('click', () => {
   window.print();
 });
 $('inv-date').valueAsDate = new Date();
+items = [{ desc: '', qty: 1, rate: 0, tax: 0 }];
+renderItems();
 </script>
   
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  
 </body>
 </html>
