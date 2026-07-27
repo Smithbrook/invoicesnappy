@@ -61,14 +61,15 @@ body {
   background: rgba(11, 10, 8, 0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-soft);
 }
-.logo-link { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--text); }
+.logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
 .logo-mark {
-  width: 34px; height: 34px; border-radius: 9px;
+  width: 40px; height: 40px; border-radius: 10px;
   background: linear-gradient(150deg, var(--accent-2), var(--accent) 60%, var(--accent-dim));
   display: flex; align-items: center; justify-content: center; color: var(--ink);
   box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 4px 14px rgba(217,164,65,0.25);
+  flex-shrink: 0;
 }
-.logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.logo-text { font-size: 24px; letter-spacing: -0.6px; }
 
 /* STEP TRANSITIONS */
 .step { animation: fadeIn 0.4s ease; }
@@ -280,9 +281,9 @@ body {
 </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Sora:wght@700;800&display=swap" rel="stylesheet">
   <style>
-    .logo-font { font-family: 'Pacifico', cursive; font-weight: 400; letter-spacing: 0; }
+    .logo-font { font-family: 'Sora', var(--font-body); font-weight: 800; letter-spacing: -0.6px; }
     .invoice-footer-brand { text-align: center; margin-top: 30px; padding-top: 18px; border-top: 1px solid #e6ddc8; color: rgba(217,164,65,0.18); font-family: 'Pacifico', cursive; font-size: 28px; pointer-events: none; user-select: none; }
   </style>
 </head>
@@ -293,9 +294,9 @@ body {
 
 <div class="app">
   <nav class="nav">
-    <a href="#" class="logo-link" onclick="return false;">
+    <a href="#" class="logo-link" onclick="goStep(3); return false;">
       <div class="logo-mark">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
       </div>
       <span class="logo-text logo-font">InvoiceSnappy</span>
     </a>
