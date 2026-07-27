@@ -774,9 +774,7 @@ $('btn-dl').addEventListener('click', () => {
   tempDiv.innerHTML = cleanHtml;
   tempDiv.style.position = 'fixed';
   tempDiv.style.top = '0';
-  tempDiv.style.left = '0';
-  tempDiv.style.opacity = '0';
-  tempDiv.style.zIndex = '-1';
+  tempDiv.style.left = '-10000px'; // off-screen, but fixed = viewport-relative so it's immune to page scroll
   tempDiv.style.pointerEvents = 'none';
   tempDiv.style.width = '700px'; // matches the invoice content's own max-width
   document.body.appendChild(tempDiv);
